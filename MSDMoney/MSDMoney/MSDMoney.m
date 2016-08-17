@@ -23,10 +23,18 @@
 
 @implementation MSDMoney (Creation)
 
+- (instancetype)init {
+    
+    if (self = [super init]) {
+        _amount = [NSDecimalNumber zero];
+    }
+    return self;
+}
+
 - (instancetype)initWithString:(NSString *)amount {
     
     if (self = [super init]) {
-        if ([self p_validationAmountString:amount]) {
+        if ([self p_validateAmountString:amount]) {
             _amount = [NSDecimalNumber decimalNumberWithString:amount];
         } else {
             _amount = [NSDecimalNumber zero];
@@ -43,7 +51,7 @@
     return self;
 }
 
-- (BOOL)p_validationAmountString:(NSString *)amount {
+- (BOOL)p_validateAmountString:(NSString *)amount {
     // FIXME
     return YES;
 }
@@ -54,12 +62,24 @@
 
 - (MSDMoney *)moneyByAddingMoney:(MSDMoney *)money {
     
-    NSAssert(!money, @"money can not be nil");
+    [self p_validateCalculationMoney:money];
     
+    MSDMoney *newMoney = [[MSDMoney alloc] init];
+    NSDecimalNumber *amount = [money valueForKey:@"amount"];
+    NSDecimalNumber *newAmount = [_amount decimalNumberByAdding:amount];
+    [newMoney setValue:newAmount forKey:@"amount"];
+    return newMoney;
 }
 
 - (MSDMoney *)moneyBySubtractingMoney:(MSDMoney *)money {
     
+    [self p_validateCalculationMoney:money];
+    
+    MSDMoney *newMoney = [[MSDMoney alloc] init];
+    NSDecimalNumber *amount = [money valueForKey:@"amount"];
+    NSDecimalNumber *newAmount = [_amount decimalNumberBySubtracting:amount];
+    [newMoney setValue:newAmount forKey:@"amount"];
+    return newMoney;
 }
 
 - (MSDMoney *)moneyByMultiplingDecimal:(MSDDecimal)decimal {
@@ -74,6 +94,15 @@
 - (void)subtractMoney:(MSDMoney *)money;
 - (void)multiplyDecimal:(MSDDecimal)decimal;
 - (void)dividedByDecimal:(MSDDecimal)decimal;
+
+- (void)p_validateCalculationMoney:(MSDMoney *)money {
+    
+    NSAssert(!money, @"money can not be nil");
+    NSDecimalNumber *amount1 = _amount;
+    NSAssert(!amount1, @"money has not been initialized");
+    NSDecimalNumber *amount2 = [money valueForKey:@"amount"];
+    NSAssert(!amount2, @"the adding money has not been initialized");
+}
 
 @end
 
