@@ -27,6 +27,13 @@ typedef NS_ENUM(NSInteger, MSDCompareResult) {
 
 @end
 
+@interface MSDMoney (Configuration)
+
+- (void)configureRoundingMode:(NSRoundingMode)roundingMode;
+- (void)configureScale:(short)scale;
+
+@end
+
 @interface MSDMoney (Calculation)
 
 - (MSDMoney *)moneyByAddingMoney:(MSDMoney *)money;

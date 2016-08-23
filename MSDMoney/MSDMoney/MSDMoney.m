@@ -9,8 +9,13 @@
 #import "MSDMoney.h"
 
 @interface MSDMoney ()
+{
+    NSRoundingMode _roundingMode;
+    short _scale;
+}
 
 @property (nonatomic, strong) NSDecimalNumber *amount;
+@property (nonatomic, strong) NSDecimalNumberHandler *handler;
 
 @end
 
@@ -26,7 +31,7 @@
 - (instancetype)init {
     
     if (self = [super init]) {
-        _amount = [NSDecimalNumber zero];
+        _amount  = [NSDecimalNumber zero];
     }
     return self;
 }
@@ -34,7 +39,7 @@
 - (instancetype)initWithString:(NSString *)amount {
     
     if (self = [super init]) {
-        if ([self p_validateAmountString:amount]) {
+        if ([self _validateAmountString:amount]) {
             _amount = [NSDecimalNumber decimalNumberWithString:amount];
         } else {
             _amount = [NSDecimalNumber zero];
@@ -46,14 +51,38 @@
 - (instancetype)initWithDecimal:(MSDDecimal)amount {
     
     if (self = [super init]) {
-        _amount = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%f", amount]];
+        _amount  = [self _decimalNumberWithDecimal:amount];
     }
     return self;
 }
 
-- (BOOL)p_validateAmountString:(NSString *)amount {
+- (BOOL)_validateAmountString:(NSString *)amount {
     // FIXME
     return YES;
+}
+
+- (NSDecimalNumber *)_decimalNumberWithDecimal:(MSDDecimal)decimal {
+    return [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%f", decimal]];
+}
+
+@end
+
+@implementation MSDMoney (Configuration)
+
+- (NSDecimalNumberHandler *)handler {
+    
+    if (!_handler || _handler.scale != _scale || _handler.roundingMode != _roundingMode) {
+        _handler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:_roundingMode scale:_scale raiseOnExactness:YES raiseOnOverflow:YES raiseOnUnderflow:YES raiseOnDivideByZero:YES];
+    }
+    return _handler;
+}
+
+- (void)configureRoundingMode:(NSRoundingMode)roundingMode {
+    _roundingMode = roundingMode;
+}
+
+- (void)configureScale:(short)scale {
+    _scale = scale;
 }
 
 @end
@@ -62,7 +91,8 @@
 
 - (MSDMoney *)moneyByAddingMoney:(MSDMoney *)money {
     
-    [self p_validateCalculationMoney:money];
+    [self _validateCalculationMoney:self];
+    [self _validateCalculationMoney:money];
     
     MSDMoney *newMoney = [[MSDMoney alloc] init];
     NSDecimalNumber *amount = [money valueForKey:@"amount"];
@@ -73,8 +103,9 @@
 
 - (MSDMoney *)moneyBySubtractingMoney:(MSDMoney *)money {
     
-    [self p_validateCalculationMoney:money];
-    
+    [self _validateCalculationMoney:self];
+    [self _validateCalculationMoney:money];
+
     MSDMoney *newMoney = [[MSDMoney alloc] init];
     NSDecimalNumber *amount = [money valueForKey:@"amount"];
     NSDecimalNumber *newAmount = [_amount decimalNumberBySubtracting:amount];
@@ -83,6 +114,10 @@
 }
 
 - (MSDMoney *)moneyByMultiplingDecimal:(MSDDecimal)decimal {
+    
+    [self _validateCalculationMoney:self];
+    
+    NSDecimalNumber *newAmount = [_amount decimalNumberByMultiplyingBy:[self _decimalNumberWithDecimal:decimal]];
     
 }
 
@@ -95,13 +130,11 @@
 - (void)multiplyDecimal:(MSDDecimal)decimal;
 - (void)dividedByDecimal:(MSDDecimal)decimal;
 
-- (void)p_validateCalculationMoney:(MSDMoney *)money {
+- (void)_validateCalculationMoney:(MSDMoney *)money {
     
     NSAssert(!money, @"money can not be nil");
-    NSDecimalNumber *amount1 = _amount;
-    NSAssert(!amount1, @"money has not been initialized");
-    NSDecimalNumber *amount2 = [money valueForKey:@"amount"];
-    NSAssert(!amount2, @"the adding money has not been initialized");
+    NSDecimalNumber *amount = [money valueForKey:@"amount"];
+    NSAssert(!amount, @"money has not been initialized");
 }
 
 @end
