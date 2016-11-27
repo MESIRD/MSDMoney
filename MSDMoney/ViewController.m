@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 
+#import "MSDMoney.h"
+
 @interface ViewController ()
 
 @end
@@ -17,6 +19,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    NSString *reg = @"^[0-9]+([.]{0}|[.]{1}[0-9]+)$";
+    NSString *object = @"012";
+    if ([object rangeOfString:reg options:NSRegularExpressionSearch].location != NSNotFound) {
+        NSLog(@"YES");
+    } else {
+        NSLog(@"NO");
+    }
 }
 
 

@@ -21,6 +21,7 @@
 
 @implementation MSDMoney
 
+
 @end
 
 
@@ -57,8 +58,7 @@
 }
 
 - (BOOL)_validateAmountString:(NSString *)amount {
-    // FIXME
-    return YES;
+    return [MSDMoney isValidMoneyFormat:amount];
 }
 
 - (NSDecimalNumber *)_decimalNumberWithDecimal:(MSDDecimal)decimal {
@@ -95,9 +95,9 @@
     [self _validateCalculationMoney:money];
     
     MSDMoney *newMoney = [[MSDMoney alloc] init];
-    NSDecimalNumber *amount = [money valueForKey:@"amount"];
+    NSDecimalNumber *amount = money.amount;
     NSDecimalNumber *newAmount = [_amount decimalNumberByAdding:amount];
-    [newMoney setValue:newAmount forKey:@"amount"];
+    newMoney.amount = newAmount;
     return newMoney;
 }
 
@@ -107,9 +107,9 @@
     [self _validateCalculationMoney:money];
 
     MSDMoney *newMoney = [[MSDMoney alloc] init];
-    NSDecimalNumber *amount = [money valueForKey:@"amount"];
+    NSDecimalNumber *amount = money.amount;
     NSDecimalNumber *newAmount = [_amount decimalNumberBySubtracting:amount];
-    [newMoney setValue:newAmount forKey:@"amount"];
+    newMoney.amount = newAmount;
     return newMoney;
 }
 
@@ -117,37 +117,96 @@
     
     [self _validateCalculationMoney:self];
     
+    MSDMoney *newMoney = [[MSDMoney alloc] init];
     NSDecimalNumber *newAmount = [_amount decimalNumberByMultiplyingBy:[self _decimalNumberWithDecimal:decimal]];
-    
+    newMoney.amount = newAmount;
+    return newMoney;
 }
 
 - (MSDMoney *)moneyByDividedByDecimal:(MSDDecimal)decimal {
     
+    [self _validateCalculationMoney:self];
+    if (decimal == 0) {
+        NSAssert(decimal == 0, @"devisior cannot be zero");
+    }
+    
+    MSDMoney *newMoney = [[MSDMoney alloc] init];
+    NSDecimalNumber *newAmount = [_amount decimalNumberByDividingBy:[self _decimalNumberWithDecimal:decimal]];
+    newMoney.amount = newAmount;
+    return newMoney;
 }
 
-- (void)addMoney:(MSDMoney *)money;
-- (void)subtractMoney:(MSDMoney *)money;
-- (void)multiplyDecimal:(MSDDecimal)decimal;
-- (void)dividedByDecimal:(MSDDecimal)decimal;
+- (void)addMoney:(MSDMoney *)money {
+    
+    [self _validateCalculationMoney:self];
+    [self _validateCalculationMoney:money];
+    
+    _amount =  [_amount decimalNumberByAdding:money.amount];
+}
+
+- (void)subtractMoney:(MSDMoney *)money {
+    
+    [self _validateCalculationMoney:self];
+    [self _validateCalculationMoney:money];
+    
+    _amount = [_amount decimalNumberBySubtracting:money.amount];
+}
+
+- (void)multiplyDecimal:(MSDDecimal)decimal {
+    
+    [self _validateCalculationMoney:self];
+    
+    _amount = [_amount decimalNumberByMultiplyingBy:[self _decimalNumberWithDecimal:decimal]];
+}
+
+- (void)dividedByDecimal:(MSDDecimal)decimal {
+    
+    [self _validateCalculationMoney:self];
+    if (decimal == 0) {
+        NSAssert(decimal == 0, @"devisior cannot be zero");
+    }
+    
+    _amount = [_amount decimalNumberByDividingBy:[self _decimalNumberWithDecimal:decimal]];
+}
 
 - (void)_validateCalculationMoney:(MSDMoney *)money {
     
     NSAssert(!money, @"money can not be nil");
-    NSDecimalNumber *amount = [money valueForKey:@"amount"];
-    NSAssert(!amount, @"money has not been initialized");
+    NSAssert(!money.amount, @"money has not been initialized");
 }
 
 @end
 
 @implementation MSDMoney (Comparison)
 
-- (MSDCompareResult)compareWithMoney:(MSDMoney *)money;
+- (MSDCompareResult)compareWithMoney:(MSDMoney *)money {
+    return (MSDCompareResult)[_amount compare:money.amount];
+}
 
 @end
 
 @implementation MSDMoney (Formation)
 
-- (NSString *)stringValue;
-- (MSDDecimal)decimalValue;
+- (NSString *)stringValue {
+    return _amount.stringValue;
+}
+
+- (MSDDecimal)decimalValue {
+    return _amount.doubleValue;
+}
+
+@end
+
+@implementation MSDMoney (Validation)
+
++ (BOOL)isValidMoneyFormat:(NSString *)money {
+    
+    NSString *regex = @"^[0-9]+([.]{0}|[.]{1}[0-9]+)$";
+    if ([money rangeOfString:regex options:NSRegularExpressionSearch].location != NSNotFound) {
+        return YES;
+    }
+    
+    return NO;
+}
 
 @end

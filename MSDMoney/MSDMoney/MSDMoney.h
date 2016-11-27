@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 
 typedef double MSDDecimal;
+
 typedef NS_ENUM(NSInteger, MSDCompareResult) {
-    MSDCompareResultSmaller = -1,
-    MSDCompareResultEqual   =  0,
-    MSDCompareResultLarger  =  1
+    MSDCompareResultSmaller = -1,   // smaller than
+    MSDCompareResultEqual   =  0,   // equal to
+    MSDCompareResultLarger  =  1    // larger than
 };
 
 @interface MSDMoney : NSObject
@@ -58,6 +59,12 @@ typedef NS_ENUM(NSInteger, MSDCompareResult) {
 
 - (NSString *)stringValue;
 - (MSDDecimal)decimalValue;
+
+@end
+
+@interface MSDMoney (Validation)
+
++ (BOOL)isValidMoneyFormat:(NSString *)money;
 
 @end
 
