@@ -1,0 +1,22 @@
+{
+  "name": "MSDMoney",
+  "version": "0.1.0",
+  "summary": "A OC warpper for Money type.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/btmesird/MSDMoney",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "btmesird": "ajie@maihaoche.com"
+  },
+  "source": {
+    "git": "https://github.com/btmesird/MSDMoney.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "MSDMoney/Classes/**/*"
+}

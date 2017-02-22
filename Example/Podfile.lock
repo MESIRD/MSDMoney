@@ -1,0 +1,35 @@
+PODS:
+  - Expecta (1.0.5)
+  - Expecta+Snapshots (3.1.0):
+    - Expecta (~> 1.0)
+    - FBSnapshotTestCase/Core (~> 2.0)
+    - Specta (~> 1.0)
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - MSDMoney (0.1.0)
+  - Specta (1.0.6)
+
+DEPENDENCIES:
+  - Expecta
+  - Expecta+Snapshots
+  - FBSnapshotTestCase
+  - MSDMoney (from `../`)
+  - Specta
+
+EXTERNAL SOURCES:
+  MSDMoney:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
+  Expecta+Snapshots: 9975fe0307199d37371e6b77de35ef7079e7616a
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  MSDMoney: 338e8eb376bee646753d39ec56b73fcee8a9eabb
+  Specta: f506f3a8361de16bc0dcf3b17b75e269072ba465
+
+PODFILE CHECKSUM: b9a59ac5229e43e66b89ad0cf9c4f44dce358f36
+
+COCOAPODS: 1.0.0

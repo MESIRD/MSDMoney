@@ -1,0 +1,14 @@
+use_frameworks!
+
+target 'MSDMoney_Example' do
+  pod 'MSDMoney', :path => '../'
+
+  target 'MSDMoney_Tests' do
+    inherit! :search_paths
+
+    pod 'Specta'
+  pod 'Expecta'
+  pod 'FBSnapshotTestCase'
+  pod 'Expecta+Snapshots'
+  end
+end

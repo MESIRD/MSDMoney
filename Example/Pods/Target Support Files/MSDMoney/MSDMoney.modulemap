@@ -1,0 +1,6 @@
+framework module MSDMoney {
+  umbrella header "MSDMoney-umbrella.h"
+
+  export *
+  module * { export * }
+}
